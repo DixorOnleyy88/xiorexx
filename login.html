@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | SpiderStresser V3</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d0d0d;
+      color: #ff1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 100vh;
+      padding-top: 60px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #ff1a1a;
+      text-shadow: 0 0 10px #ff0000;
+      text-align: center;
+    }
+
+    .logo {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+      margin: 10px 0 25px;
+    }
+
+    .container {
+      background: #1a1a1a;
+      padding: 30px 35px;
+      border-radius: 12px;
+      box-shadow: 0 0 30px #ff000088;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      background: #330000;
+      color: #fff;
+      margin-bottom: 15px;
+      box-shadow: inset 0 0 5px #ff1a1a55;
+    }
+
+    button {
+      background: #ff1a1a;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #fff;
+      box-shadow: 0 0 15px #ff0000aa;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #cc0000;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>SpiderStresser V3 Login</h1>
+  <!-- Ganti logo -->
+  <img src="https://files.catbox.moe/sbrorq.png" class="logo" alt="Logo SpiderStresser">
+
+  <div class="container">
+    <form id="loginForm">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter your username" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" required />
+
+      <button type="submit">LOGIN</button>
+    </form>
+  </div>
+
+  <div class="footer">
+    © 2025 CybX0r Team • Developer: @MR.R4XOR
+  </div>
+
+  <script>
+    const backendURL = "http://152.42.251.149:9412"; // GANTI DENGAN IP SERVER KAMU
+
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await fetch(`${backendURL}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem("loggedIn", "true");
+          window.location.href = "home.html";
+        } else {
+          alert("❌ Login gagal! Username atau password salah.");
+        }
+      } catch (err) {
+        alert("⚠️ Tidak dapat menghubungi server. Periksa koneksi atau IP backend.");
+      }
+    });
+  </script>
+
+</body>
+</html>
